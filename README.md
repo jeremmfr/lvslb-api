@@ -6,7 +6,7 @@ Create API REST for keepavlived virtual_server (generate file, reload keepalived
 
 Compile:
 --------
-export GO111MODULE=on
+export GO111MODULE=on  
 go build -o lvslb-api
 
 Run:
@@ -45,12 +45,17 @@ Run:
 ***
 API List :
 ---------
+**LIST ALL IPVS**
+	`/list_ipvs_all/`  
+status of all virtual_server ipvs
 
-	`/list_ipvs_all/`  status of all virtual_server ipvs
-	`/list_ipvs/{protocol}/{IP}/{port}/` status for one virtual_server ipvs
-		?stats=true for stats instead connections
-		?zero=true for reset stats
-		?count=true for count real_server in virtual_server pool
+**LIST ONE IPVS**
+	`/list_ipvs/{protocol}/{IP}/{port}/`  
+	status for one virtual_server ipvs  
+		`?stats=true` for stats instead connections  
+		`?zero=true` for reset stats  
+		`?count=true` for count real_server in virtual_server pool  
+
 **ADD**
 	`/add_ipvs/{proto}/{IP}/{port}/`
 
@@ -63,7 +68,7 @@ API List :
 **MODIFY**
 	`/change_ipvs/{proto}/{IP}/{port}/`
 
-All requests need json in body with these parameters :
+All requests need json in body (except LIST) with these parameters :
 * **IP** : IP for virtual_server
 * **Port** : Port for virtual_server
 * **Protocol** : Protocol for virtual_server (TCP|UDP|SCTP)
