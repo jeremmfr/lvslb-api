@@ -1,5 +1,7 @@
 # lvslb-api
-[![GoDoc](https://godoc.org/github.com/jeremmfr/lvslb-api?status.svg)](https://godoc.org/github.com/jeremmfr/lvslb-api) [![Go Report Card](https://goreportcard.com/badge/github.com/jeremmfr/lvslb-api)](https://goreportcard.com/report/github.com/jeremmfr/lvslb-api)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/jeremmfr/lvslb-api)
+[![GoDoc](https://godoc.org/github.com/jeremmfr/lvslb-api?status.svg)](https://godoc.org/github.com/jeremmfr/lvslb-api)
+[![Go Report Card](https://goreportcard.com/badge/github.com/jeremmfr/lvslb-api)](https://goreportcard.com/report/github.com/jeremmfr/lvslb-api)
 [![Build Status](https://travis-ci.org/jeremmfr/lvslb-api.svg?branch=master)](https://travis-ci.org/jeremmfr/lvslb-api)
 
 Create API REST for keepavlived virtual_server (generate file, reload keepalived and ipvs command)
