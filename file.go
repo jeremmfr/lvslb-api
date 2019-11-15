@@ -15,7 +15,9 @@ func checkIpvsExists(ipvs ipvsStruc) bool {
 // generateFile : generate keepalived file string
 func generateFile(ipvs ipvsStruc) string {
 	ipvsIn := strings.Join([]string{"virtual_server ", ipvs.IP, " ", ipvs.Port, " {\n"}, "")
-	ipvsIn = strings.Join([]string{ipvsIn, "\tprotocol ", ipvs.Protocol, "\n\tlb_kind ", ipvs.LbKind, "\n\tlb_algo ", ipvs.LbAlgo, "\n"}, "")
+	ipvsIn = strings.Join([]string{ipvsIn, "\tprotocol ", ipvs.Protocol,
+		"\n\tlb_kind ", ipvs.LbKind,
+		"\n\tlb_algo ", ipvs.LbAlgo, "\n"}, "")
 	if ipvs.PersistenceTimeout != "0" {
 		ipvsIn = strings.Join([]string{ipvsIn, "\tpersistence_timeout ", ipvs.PersistenceTimeout, "\n"}, "")
 	}
@@ -101,7 +103,9 @@ func generateFile(ipvs ipvsStruc) string {
 func checkIpvsOk(ipvs ipvsStruc) (bool, error) {
 	ipvsIn := generateFile(ipvs)
 
-	ipvsReadByte, err := ioutil.ReadFile(strings.Join([]string{*dirKeepalived, ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"}, ""))
+	ipvsReadByte, err := ioutil.ReadFile(strings.Join([]string{*dirKeepalived,
+		ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"},
+		""))
 	ipvsRead := string(ipvsReadByte)
 
 	if err != nil {
@@ -116,7 +120,9 @@ func checkIpvsOk(ipvs ipvsStruc) (bool, error) {
 // addIpvsFile : write generated keepalived file on system
 func addIpvsFile(ipvs ipvsStruc) error {
 	ipvsIn := generateFile(ipvs)
-	err := ioutil.WriteFile(strings.Join([]string{*dirKeepalived, ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"}, ""), []byte(ipvsIn), 0644)
+	err := ioutil.WriteFile(strings.Join([]string{*dirKeepalived,
+		ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"},
+		""), []byte(ipvsIn), 0644)
 	if err != nil {
 		return err
 	}

@@ -86,13 +86,19 @@ func main() {
 	accessLogFile := flag.String("log", "/var/log/lvslb-api.access.log", "file for access log")
 	htpasswdfile = flag.String("htpasswd", "", "htpasswd file for login:password")
 
-	reloadKeepalivedCommand = flag.String("reload_cmd", "service keepalived reload", "command for reload ipvs keepalived process")
-	dirKeepalived = flag.String("dir_keepalived", "/etc/keepalived/keepalived-ipvs.d/", "directory for keepalived files")
-	timeSleep = flag.Int("sleep", 5, "time for sleep after reload ipvs keepalived")
+	reloadKeepalivedCommand = flag.String("reload_cmd", "service keepalived reload",
+		"command for reload ipvs keepalived process")
+	dirKeepalived = flag.String("dir_keepalived", "/etc/keepalived/keepalived-ipvs.d/",
+		"directory for keepalived files")
+	timeSleep = flag.Int("sleep", 5,
+		"time for sleep after reload ipvs keepalived")
 
-	scriptMonitoringAdd = flag.String("mon_add", "", "script for monitoring add witch arguments $protocol $ip $port $backends $mon_period")
-	scriptMonitoringChange = flag.String("mon_change", "", "script for monitoring change witch arguments $protocol $ip $port $backends $mon_period")
-	scriptMonitoringRemove = flag.String("mon_remove", "", "script for monitoring remove witch arguments $protocol $ip $port $backends $mon_period")
+	scriptMonitoringAdd = flag.String("mon_add", "",
+		"script for monitoring add witch arguments $protocol $ip $port $backends $mon_period")
+	scriptMonitoringChange = flag.String("mon_change", "",
+		"script for monitoring change witch arguments $protocol $ip $port $backends $mon_period")
+	scriptMonitoringRemove = flag.String("mon_remove", "",
+		"script for monitoring remove witch arguments $protocol $ip $port $backends $mon_period")
 
 	flag.Parse()
 

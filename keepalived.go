@@ -231,14 +231,15 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 		if ipvs.MonPeriod != "" {
 			periodMon = ipvs.MonPeriod
 		}
-		err := exec.Command(*scriptMonitoringAdd, ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","), periodMon).Run()
+		err := exec.Command(*scriptMonitoringAdd,
+			ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","),
+			periodMon).Run()
 		if err != nil {
 			log.Print("Error mon_add", err)
 		}
 	}
 	sleep()
 	mutex.Unlock()
-
 }
 
 // checkIpvs : check keepalived file and compare from json input
@@ -360,7 +361,9 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 		if ipvs.MonPeriod != "" {
 			periodMon = ipvs.MonPeriod
 		}
-		err := exec.Command(*scriptMonitoringRemove, ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","), periodMon).Run()
+		err := exec.Command(*scriptMonitoringRemove,
+			ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","),
+			periodMon).Run()
 		if err != nil {
 			log.Print("Error mon_remove", err)
 		}
@@ -440,14 +443,15 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 		if ipvs.MonPeriod != "" {
 			periodMon = ipvs.MonPeriod
 		}
-		err := exec.Command(*scriptMonitoringChange, ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","), periodMon).Run()
+		err := exec.Command(*scriptMonitoringChange,
+			ipvs.Protocol, ipvs.IP, ipvs.Port, strings.TrimSuffix(backendListComma, ","),
+			periodMon).Run()
 		if err != nil {
 			log.Print("Error mon_change", err)
 		}
 	}
 	sleep()
 	mutex.Unlock()
-
 }
 
 // reloadIpvs : reload keepalived service
