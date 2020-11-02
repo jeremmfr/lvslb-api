@@ -1,18 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
 )
 
-// checkIpvsExists : test if keepalived file exists
+// checkIpvsExists : test if keepalived file exists.
 func checkIpvsExists(ipvs ipvsStruc) bool {
 	_, err := os.Stat(strings.Join([]string{*dirKeepalived, ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"}, ""))
+
 	return !os.IsNotExist(err)
 }
 
-// generateFile : generate keepalived file string
+// generateFile : generate keepalived file string.
 func generateFile(ipvs ipvsStruc) string {
 	ipvsIn := strings.Join([]string{"virtual_server ", ipvs.IP, " ", ipvs.Port, " {\n"}, "")
 	ipvsIn = strings.Join([]string{ipvsIn, "\tprotocol ", ipvs.Protocol,
@@ -96,10 +98,11 @@ func generateFile(ipvs ipvsStruc) string {
 	if ipvs.MonPeriod != "" && ipvs.MonPeriod != defaultPeriod {
 		ipvsIn = strings.Join([]string{ipvsIn, "# mon_period ", ipvs.MonPeriod, "\n"}, "")
 	}
+
 	return ipvsIn
 }
 
-// checkIpvsOk : compare keepalived file
+// checkIpvsOk : compare keepalived file.
 func checkIpvsOk(ipvs ipvsStruc) (bool, error) {
 	ipvsIn := generateFile(ipvs)
 
@@ -109,31 +112,34 @@ func checkIpvsOk(ipvs ipvsStruc) (bool, error) {
 	ipvsRead := string(ipvsReadByte)
 
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to read file : %w", err)
 	}
 	if ipvsIn == ipvsRead {
 		return true, nil
 	}
+
 	return false, nil
 }
 
-// addIpvsFile : write generated keepalived file on system
+// addIpvsFile : write generated keepalived file on system.
 func addIpvsFile(ipvs ipvsStruc) error {
 	ipvsIn := generateFile(ipvs)
-	err := ioutil.WriteFile(strings.Join([]string{*dirKeepalived,
+	err := ioutil.WriteFile(strings.Join([]string{*dirKeepalived, // nolint: gosec
 		ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"},
 		""), []byte(ipvsIn), 0644)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to write file : %w", err)
 	}
+
 	return nil
 }
 
-// removeIpvsFile : remove keepalived file
+// removeIpvsFile : remove keepalived file.
 func removeIpvsFile(ipvs ipvsStruc) error {
 	err := os.Remove(strings.Join([]string{*dirKeepalived, ipvs.IP, "_", ipvs.Protocol, "_", ipvs.Port, ".conf"}, ""))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete file : %w", err)
 	}
+
 	return nil
 }

@@ -15,7 +15,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// jsonDataValidate validate missing or incompatibility parameters
+// jsonDataValidate validate missing or incompatibility parameters.
 func jsonDataValidate(ipvs ipvsStruc) string {
 	_, _, err := net.ParseCIDR(strings.Join([]string{ipvs.IP, "/32"}, ""))
 	if err != nil {
@@ -73,10 +73,11 @@ func jsonDataValidate(ipvs ipvsStruc) string {
 			return response
 		}
 	}
+
 	return ""
 }
 
-// jsonDataValidateBackend validate backend in json
+// jsonDataValidateBackend validate backend in json.
 func jsonDataValidateBackend(backend ipvsBackend) string {
 	_, _, err := net.ParseCIDR(strings.Join([]string{backend.IP, "/32"}, ""))
 	if err != nil {
@@ -156,10 +157,11 @@ func jsonDataValidateBackend(backend ipvsBackend) string {
 	if backend.CheckType == checkMISC && backend.MiscPath == "" {
 		return strings.Join([]string{"Error missing misc_path for MISC_CHECK on ", backend.IP, ":", backend.Port}, "")
 	}
+
 	return ""
 }
 
-// addIpvs : check backend exists, add keepalived file, reload service and add monitoring if script set
+// addIpvs : check backend exists, add keepalived file, reload service and add monitoring if script set.
 func addIpvs(w http.ResponseWriter, r *http.Request) {
 	if *htpasswdfile != "" {
 		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
@@ -167,6 +169,7 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 		usercheck := authenticator.CheckAuth(r)
 		if usercheck == "" {
 			w.WriteHeader(http.StatusUnauthorized)
+
 			return
 		}
 	}
@@ -177,6 +180,7 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 	err := dec.Decode(&ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 
@@ -189,6 +193,7 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 	if validate != "" {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, validate)
+
 		return
 	}
 	ipvsExists := checkIpvsExists(ipvs)
@@ -196,17 +201,20 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 		ipvsOk, err := checkIpvsOk(ipvs)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
+
 			return
 		}
 		if !ipvsOk {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintln(w, "ipvs", ipvs.Protocol, " ", ipvs.IP, ":", ipvs.Port, "already exist with different config")
+
 			return
 		}
 	}
 	err = checkBackends(ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 	mutex.Lock()
@@ -214,12 +222,14 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	err = reloadIpvs()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	if *scriptMonitoringAdd != "" {
@@ -242,7 +252,7 @@ func addIpvs(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 }
 
-// checkIpvs : check keepalived file and compare from json input
+// checkIpvs : check keepalived file and compare from json input.
 func checkIpvs(w http.ResponseWriter, r *http.Request) {
 	if *htpasswdfile != "" {
 		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
@@ -250,6 +260,7 @@ func checkIpvs(w http.ResponseWriter, r *http.Request) {
 		usercheck := authenticator.CheckAuth(r)
 		if usercheck == "" {
 			w.WriteHeader(http.StatusUnauthorized)
+
 			return
 		}
 	}
@@ -260,6 +271,7 @@ func checkIpvs(w http.ResponseWriter, r *http.Request) {
 	err := dec.Decode(&ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 
@@ -272,6 +284,7 @@ func checkIpvs(w http.ResponseWriter, r *http.Request) {
 	if validate != "" {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, validate)
+
 		return
 	}
 	ipvsExists := checkIpvsExists(ipvs)
@@ -280,6 +293,7 @@ func checkIpvs(w http.ResponseWriter, r *http.Request) {
 		ipvsOk, err := checkIpvsOk(ipvs)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
+
 			return
 		}
 		if !ipvsOk {
@@ -291,20 +305,23 @@ func checkIpvs(w http.ResponseWriter, r *http.Request) {
 		js, err := json.Marshal(ipvsResponse)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
+
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, err = w.Write(js)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
+
 			return
 		}
+
 		return
 	}
 	w.WriteHeader(http.StatusNotFound)
 }
 
-// removeIpvs : remove keepalived file, reload service and remove monitoring if script set
+// removeIpvs : remove keepalived file, reload service and remove monitoring if script set.
 func removeIpvs(w http.ResponseWriter, r *http.Request) {
 	if *htpasswdfile != "" {
 		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
@@ -312,6 +329,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 		usercheck := authenticator.CheckAuth(r)
 		if usercheck == "" {
 			w.WriteHeader(http.StatusUnauthorized)
+
 			return
 		}
 	}
@@ -322,6 +340,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 	err := dec.Decode(&ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 
@@ -334,6 +353,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 	if validate != "" {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, validate)
+
 		return
 	}
 	mutex.Lock()
@@ -343,6 +363,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			mutex.Unlock()
+
 			return
 		}
 	}
@@ -350,6 +371,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	if *scriptMonitoringRemove != "" {
@@ -372,7 +394,7 @@ func removeIpvs(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 }
 
-// changeIpvs : replace keepalived file, reload service and modify monitoring if script set
+// changeIpvs : replace keepalived file, reload service and modify monitoring if script set.
 func changeIpvs(w http.ResponseWriter, r *http.Request) {
 	if *htpasswdfile != "" {
 		htpasswd := auth.HtpasswdFileProvider(*htpasswdfile)
@@ -380,6 +402,7 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 		usercheck := authenticator.CheckAuth(r)
 		if usercheck == "" {
 			w.WriteHeader(http.StatusUnauthorized)
+
 			return
 		}
 	}
@@ -390,6 +413,7 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 	err := dec.Decode(&ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 
@@ -402,17 +426,20 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 	if validate != "" {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, validate)
+
 		return
 	}
 	ipvsExists := checkIpvsExists(ipvs)
 	if !ipvsExists {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, "Unknown LB : ", ipvs.Protocol, " ", ipvs.IP, ":", ipvs.Port)
+
 		return
 	}
 	err = checkBackends(ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 	mutex.Lock()
@@ -420,18 +447,21 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	err = addIpvsFile(ipvs)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	err = reloadIpvs()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		mutex.Unlock()
+
 		return
 	}
 	if *scriptMonitoringChange != "" {
@@ -454,7 +484,7 @@ func changeIpvs(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 }
 
-// reloadIpvs : reload keepalived service
+// reloadIpvs : reload keepalived service.
 func reloadIpvs() error {
 	reloadKeepalivedCommandParts := strings.Fields(*reloadKeepalivedCommand)
 	reloadKeepalivedCommandBin := reloadKeepalivedCommandParts[0]
@@ -463,10 +493,11 @@ func reloadIpvs() error {
 	if err != nil {
 		return fmt.Errorf(string(cmdOut), err.Error())
 	}
+
 	return nil
 }
 
-// checkBackends : check if communication with backends is possible
+// checkBackends : check if communication with backends is possible.
 func checkBackends(ipvs ipvsStruc) error {
 	for _, backend := range ipvs.Backends {
 		if backend.CheckType != checkNONE {
@@ -516,5 +547,6 @@ func checkBackends(ipvs ipvsStruc) error {
 			}
 		}
 	}
+
 	return nil
 }

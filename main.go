@@ -50,7 +50,6 @@ const checkGET string = "HTTP_GET"
 const checkSSLGET string = "SSL_GET"
 const checkTCP string = "TCP_CHECK"
 const checkMISC string = "MISC_CHECK"
-
 const defaultPeriod string = "default"
 const trueStr string = "true"
 

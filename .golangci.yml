@@ -4,15 +4,16 @@ linters:
     - funlen
     - wsl
     - gochecknoglobals
-#    - dupl
-#    - lll
+    - gofumpt
+    - nestif
+    - goerr113
 linters-settings:
   gocyclo:
     # minimal code complexity to report, 30 by default
     min-complexity: 40
   gocognit:
     # minimal code complexity to report, 30 by default
-    min-complexity: 90
+    min-complexity: 100
 issues:
   exclude-rules:
     - text: "G204: Subprocess launched with function call as argument or cmd arguments"

@@ -9,17 +9,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// listIpvsAll : return output of command ipvsadm -L -n
+// listIpvsAll : return output of command ipvsadm -L -n.
 func listIpvsAll(w http.ResponseWriter, r *http.Request) {
 	stdout, err := exec.Command("ipvsadm", "-L", "-n").Output()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 	fmt.Fprintln(w, string(stdout))
 }
 
-// listIpvs : return output of command ipvsadm -L -n or ipvsadm -Z for specific virtual_server
+// listIpvs : return output of command ipvsadm -L -n or ipvsadm -Z for specific virtual_server.
 func listIpvs(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var command []string
@@ -38,6 +39,7 @@ func listIpvs(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, "Unknown Protocol")
+
 		return
 	}
 	if strings.Contains(vars["IP"], ":") {
@@ -51,6 +53,7 @@ func listIpvs(w http.ResponseWriter, r *http.Request) {
 	stdout, err := exec.Command("ipvsadm", command...).Output()
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+
 		return
 	}
 	if r.URL.Query().Get("count") == trueStr {
