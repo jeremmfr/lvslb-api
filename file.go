@@ -27,7 +27,7 @@ func generateFile(ipvs ipvsStruc) string {
 	}
 	if ipvs.SorryIP != "" {
 		ipvsIn = strings.Join([]string{ipvsIn, "\tsorry_server ", ipvs.SorryIP, " "}, "")
-		if ipvs.SorryPort != "" {
+		if ipvs.SorryPort != "" && ipvs.SorryPort != "0" {
 			ipvsIn = strings.Join([]string{ipvsIn, ipvs.SorryPort, "\n"}, "")
 		} else {
 			ipvsIn = strings.Join([]string{ipvsIn, ipvs.Port, "\n"}, "")
